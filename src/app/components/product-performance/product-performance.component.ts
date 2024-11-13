@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../material.module';
+import { MaterialModule } from 'src/app/material.module';
 
 export interface performanceData {
   id: number;

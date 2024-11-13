@@ -17,7 +17,7 @@ import {
     ApexResponsive,
     NgApexchartsModule,
 } from 'ng-apexcharts';
-import { MaterialModule } from '../../material.module';
+import { MaterialModule } from 'src/app/material.module';
 
 
 export interface yearlyChart {

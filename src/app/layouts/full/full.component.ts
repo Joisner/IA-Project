@@ -7,7 +7,7 @@ import { navItems } from './sidebar/sidebar-data';
 import { NavService } from '../../services/nav.service';
 import { AppNavItemComponent } from './sidebar/nav-item/nav-item.component';
 import { RouterModule } from '@angular/router';
-import { MaterialModule } from '../../material.module';
+import { MaterialModule } from 'src/app/material.module';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { NgScrollbarModule } from 'ngx-scrollbar';

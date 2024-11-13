@@ -13,7 +13,7 @@ import {
 } from 'ng-apexcharts';
 
 import { TablerIconsModule } from 'angular-tabler-icons';
-import { MaterialModule } from '../../material.module';
+import { MaterialModule } from 'src/app/material.module';
 
 export interface monthlyChart {
     series: ApexAxisChartSeries;

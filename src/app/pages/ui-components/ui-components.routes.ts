@@ -8,6 +8,7 @@ import { AppMenuComponent } from './menu/menu.component';
 import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
+import { ChatBotComponent } from './chat-bot/chat-bot.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -40,6 +41,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'tables',
         component: AppTablesComponent,
+      },
+      {
+        path: 'chat-bot',
+        component: ChatBotComponent,
       },
     ],
   },

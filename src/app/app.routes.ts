@@ -29,6 +29,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
       },
+      {
+        path: 'chat',
+        loadChildren: () =>
+          import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
+      },
     ],
   },
   {

@@ -10,7 +10,22 @@ export const navItems: NavItem[] = [
     route: '/dashboard',
   },
   {
+    displayName: 'Chat-bot',
+    iconName: 'message-circle',
+    route: '/dashboard/chat-bot',
+  },
+  {
+    displayName: 'Chat-bot-2',
+    iconName: 'message-circle',
+    route: '/dashboard/chat-bot-v2',
+  },
+ /*  {
     navCap: 'Ui Components',
+  },
+  {
+    displayName: 'Chat-bot',
+    iconName: 'message-circle',
+    route: '/ui-components/chat-bot',
   },
   {
     displayName: 'Badge',
@@ -72,5 +87,5 @@ export const navItems: NavItem[] = [
     displayName: 'Sample Page',
     iconName: 'brand-dribbble',
     route: '/extra/sample-page',
-  },
+  }, */
 ];

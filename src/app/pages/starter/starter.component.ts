@@ -6,7 +6,7 @@ import { AppMonthlyEarningsComponent } from 'src/app/components/monthly-earnings
 import { AppRecentTransactionsComponent } from 'src/app/components/recent-transactions/recent-transactions.component';
 import { AppProductPerformanceComponent } from 'src/app/components/product-performance/product-performance.component';
 import { AppBlogCardsComponent } from 'src/app/components/blog-card/blog-card.component';
-
+import { ChatBotComponent } from '../ui-components/chat-bot/chat-bot.component';
 
 @Component({
   selector: 'app-starter',
@@ -18,7 +18,8 @@ import { AppBlogCardsComponent } from 'src/app/components/blog-card/blog-card.co
     AppMonthlyEarningsComponent,
     AppRecentTransactionsComponent,
     AppProductPerformanceComponent,
-    AppBlogCardsComponent
+    AppBlogCardsComponent,
+    ChatBotComponent
   ],
   templateUrl: './starter.component.html',
   encapsulation: ViewEncapsulation.None,

@@ -1,224 +1,64 @@
-<mat-card class="cardWithShadow theme-card">
-  <mat-card-header>
-    <mat-card-title class="m-b-0">Chips</mat-card-title>
-  </mat-card-header>
-  <mat-card-content class="b-t-1">
-    <div class="row">
-      <div class="col-lg-6">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- basic -->
-        <!-- ------------------------------------------------------------------------- -->
+<mat-sidenav-container class="chat-container">
+  <mat-sidenav #sidenav mode="side" opened class="chat-sidenav">
+    <mat-toolbar color="primary">
+      <span>Chats</span>
+      <button mat-icon-button (click)="openNewChatDialog()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </mat-toolbar>
+    
+    <mat-nav-list>
+      <mat-list-item *ngFor="let chat of chats" 
+                    (click)="selectChat(chat)"
+                    [class.active]="currentChat?.id === chat.id">
+        <mat-icon matListItemIcon>chat</mat-icon>
+        <span matListItemTitle>{{chat.name}}</span>
+        <button mat-icon-button (click)="deleteChat(chat.id, $event)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
 
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Basic</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <mat-chip-listbox aria-label="Fish selection">
-              <mat-chip-option class="f-s-14" color="primary"
-                >One fish</mat-chip-option
-              >
-              <mat-chip-option class="f-s-14">Two fish</mat-chip-option>
-              <mat-chip-option class="f-s-14" color="accent" selected
-                >Accent fish</mat-chip-option
-              >
-              <mat-chip-option class="f-s-14" color="warn"
-                >Warn fish</mat-chip-option
-              >
-            </mat-chip-listbox>
-          </mat-card-content>
-        </mat-card>
-      </div>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="chat-header">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-icon>smart_toy</mat-icon>
+      <span class="header-title">{{currentChat?.name || 'AI Assistant'}}</span>
+    </mat-toolbar>
 
-      <div class="col-lg-6">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- avatar -->
-        <!-- ------------------------------------------------------------------------- -->
-
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Avatar</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <mat-chip-set aria-label="Dog selection">
-              <mat-chip class="f-s-14">
-                <img
-                  matChipAvatar
-                  src="/assets/images/profile/user-1.jpg"
-                  alt="Photo of a Shiba Inu"
-                />
-                Anderson
-              </mat-chip>
-              <mat-chip class="f-s-14" color="primary">
-                <img
-                  matChipAvatar
-                  src="/assets/images/profile/user-2.jpg"
-                  alt="Photo of a Shiba Inu"
-                />
-                Monty
-              </mat-chip>
-              <mat-chip class="f-s-14" color="accent">
-                <img
-                  matChipAvatar
-                  src="/assets/images/profile/user-3.jpg"
-                  alt="Photo of a Shiba Inu"
-                />
-                Mathew
-              </mat-chip>
-            </mat-chip-set>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <div class="col-lg-6">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- Drag n Drop -->
-        <!-- ------------------------------------------------------------------------- -->
-
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Drag n Drop</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <mat-chip-set
-              class="example-chip"
-              cdkDropList
-              cdkDropListOrientation="horizontal"
-              (cdkDropListDropped)="drop($event)"
-            >
-              @for (vegetable of vegetables(); track vegetable.name) {
-              <mat-chip class="example-box" cdkDrag>{{
-                vegetable.name
-              }}</mat-chip>
-              }
-            </mat-chip-set>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <div class="col-lg-6">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- Stacked  -->
-        <!-- ------------------------------------------------------------------------- -->
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Stacked </mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <mat-chip-listbox
-              class="mat-mdc-chip-set-stacked"
-              aria-label="Color selection"
-            >
-              @for(chip of availableColors; track chip.color) {
-              <mat-chip-option selected [color]="chip.color">
-                {{ chip.name }}
-              </mat-chip-option>
-              }
-            </mat-chip-listbox>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <div class="col-12">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- Input -->
-        <!-- ------------------------------------------------------------------------- -->
-
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Input</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Favorite Fruits</mat-label>
-              <mat-chip-grid #chipGrid aria-label="Enter fruits">
-                @for(fruit of fruits; track fruit.name) {
-                <mat-chip-row
-                  (removed)="remove(fruit)"
-                  [editable]="true"
-                  (edited)="edit(fruit, $event)"
-                  [aria-description]="'press enter to edit ' + fruit.name"
-                  class="f-s-14"
-                >
-                  {{ fruit.name }}
-                  <button
-                    matChipRemove
-                    [attr.aria-label]="'remove ' + fruit.name"
-                  >
-                    <mat-icon>cancel</mat-icon>
-                  </button>
-                </mat-chip-row>
-                }
-
-                <input
-                  placeholder="New fruit..."
-                  [matChipInputFor]="chipGrid"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="addOnBlur"
-                  (matChipInputTokenEnd)="add($event)"
-                />
-              </mat-chip-grid>
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <div class="col-12">
-        <!-- ------------------------------------------------------------------------- -->
-        <!-- Form Control -->
-        <!-- ------------------------------------------------------------------------- -->
-
-        <mat-card class="b-1 shadow-none">
-          <mat-card-header>
-            <mat-card-title>Form Control</mat-card-title>
-          </mat-card-header>
-          <mat-card-content class="b-t-1">
-            <div class="d-flex gap-8">
-              <button
-                mat-stroked-button
-                color="primary"
-                (click)="formControl.disable()"
-              >
-                Disable form control
-              </button>
-              <button
-                mat-raised-button
-                color="primary"
-                (click)="formControl.enable()"
-              >
-                Enable form control
-              </button>
-            </div>
-            <mat-form-field appearance="outline" class="w-100 m-t-20">
-              <mat-label>Video keywords</mat-label>
-              <mat-chip-grid
-                #formChip
-                aria-label="Enter keywords"
-                [formControl]="formControl"
-              >
-                @for (keyword of keywords(); track keyword) {
-                <mat-chip-row (removed)="removeKeyword(keyword)">
-                  {{ keyword }}
-                  <button matChipRemove aria-label="'remove ' + keyword">
-                    <mat-icon>cancel</mat-icon>
-                  </button>
-                </mat-chip-row>
-                }
-              </mat-chip-grid>
-              <input
-                placeholder="New keyword..."
-                [matChipInputFor]="formChip"
-                (matChipInputTokenEnd)="addForm($event)"
-              />
-            </mat-form-field>
-
-            <p>
-              <span class="f-w-600">The following keywords are entered:</span>
-              {{ formControl.value }}
-            </p>
-          </mat-card-content>
-        </mat-card>
+    <div class="messages-container" #scrollContainer>
+      <div class="message-list" *ngIf="currentChat">
+        <div *ngFor="let message of currentChat.messages" 
+             [ngClass]="{'bot-message': message.isBot, 'user-message': !message.isBot}"
+             class="message-bubble">
+          <mat-card>
+            <mat-card-content>
+              <div class="message-content">
+                <mat-icon *ngIf="message.isBot" class="bot-icon">smart_toy</mat-icon>
+                <mat-icon *ngIf="!message.isBot" class="user-icon">person</mat-icon>
+                {{ message.content }}
+              </div>
+              <div class="message-timestamp">
+                {{ message.timestamp | date:'shortTime' }}
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
       </div>
     </div>
-  </mat-card-content>
-</mat-card>
+
+    <form [formGroup]="messageForm" (ngSubmit)="sendMessage()" class="input-container">
+      <mat-form-field appearance="outline" class="message-input">
+        <input matInput
+               formControlName="message"
+               placeholder="Type your message...">
+      </mat-form-field>
+      <button mat-fab color="primary" type="submit" [disabled]="!messageForm.valid || !currentChat">
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+  </mat-sidenav-content>
+</mat-sidenav-container>

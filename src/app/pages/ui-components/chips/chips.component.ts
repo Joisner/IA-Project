@@ -1,162 +1,124 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { ThemePalette } from '@angular/material/core';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
-import {
-  CdkDrag,
-  CdkDragDrop,
-  CdkDropList,
-  moveItemInArray,
-} from '@angular/cdk/drag-drop';
-import { MatCardModule } from '@angular/material/card';
-import {
-  MatChipEditedEvent,
-  MatChipInputEvent,
-  MatChipsModule,
-} from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-
-export interface ChipColor {
-  name: string;
-  color: ThemePalette;
-}
-
-export interface Fruit {
-  name: string;
-}
-
-export interface Vegetable {
-  name: string;
-}
-
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { ChatService } from 'src/app/services/chat-bot/chat-bot.service';
+import { Chat, Message } from 'src/app/core/models/chat-bot.model';
+import { MaterialModule } from 'src/app/material.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-chips',
   standalone: true,
   templateUrl: './chips.component.html',
   styleUrls: ['./chips.component.scss'],
   imports: [
-    MatFormFieldModule,
-    MatChipsModule,
     MatIconModule,
+    MatToolbarModule,
     MatCardModule,
-    CdkDropList,
-    CdkDrag,
-    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDialogModule,
     ReactiveFormsModule,
-    MatButtonModule
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    CommonModule,
+    MaterialModule
+  ]
 })
 export class AppChipsComponent {
-  // drag n drop
-  readonly vegetables = signal<Vegetable[]>([
-    { name: 'apple' },
-    { name: 'banana' },
-    { name: 'strawberry' },
-    { name: 'orange' },
-    { name: 'kiwi' },
-    { name: 'cherry' },
-  ]);
+  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  
+  messageForm: FormGroup;
+  currentChat: Chat | null = null;
+  chats: Chat[] = [];
+  private subscription: Subscription;
 
-  drop(event: CdkDragDrop<Vegetable[]>) {
-    this.vegetables.update((vegetables) => {
-      moveItemInArray(vegetables, event.previousIndex, event.currentIndex);
-      return [...vegetables];
+  constructor(
+    private fb: FormBuilder,
+    private chatService: ChatService,
+    private dialog: MatDialog
+  ) {
+    this.messageForm = this.fb.group({
+      message: ['', Validators.required]
     });
   }
 
-  //
-  // Stacked
-  //
-  availableColors: ChipColor[] = [
-    { name: 'Primary', color: 'primary' },
-    { name: 'Accent', color: 'accent' },
-    { name: 'Warn', color: 'warn' },
-  ];
-
-  //
-  //  chips with input
-  //
-  addOnBlur = true;
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  fruits: Fruit[] = [{ name: 'Lemon' }, { name: 'Lime' }, { name: 'Apple' }];
-
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our fruit
-    if (value) {
-      this.fruits.push({ name: value });
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-  }
-
-  remove(fruit: Fruit): void {
-    const index = this.fruits.indexOf(fruit);
-
-    if (index >= 0) {
-      this.fruits.splice(index, 1);
-    }
-  }
-
-  edit(fruit: Fruit, event: MatChipEditedEvent) {
-    const value = event.value.trim();
-
-    // Remove fruit if it no longer has a name
-    if (!value) {
-      this.remove(fruit);
-      return;
-    }
-
-    // Edit existing fruit
-    const index = this.fruits.indexOf(fruit);
-    if (index >= 0) {
-      this.fruits[index].name = value;
-    }
-  }
-
-  // form control
-
-  readonly keywords = signal(['angular', 'how-to', 'tutorial', 'accessibility']);
-  readonly formControl = new FormControl(['angular']);
-
-  announcer = inject(LiveAnnouncer);
-
-  removeKeyword(keyword: string) {
-    this.keywords.update(keywords => {
-      const index = keywords.indexOf(keyword);
-      if (index < 0) {
-        return keywords;
-      }
-
-      keywords.splice(index, 1);
-      this.announcer.announce(`removed ${keyword}`);
-      return [...keywords];
+  ngOnInit() {
+    this.chats = this.chatService.getAllChats();
+    this.subscription = this.chatService.currentChat$.subscribe(chat => {
+      this.currentChat = chat;
+      setTimeout(() => this.scrollToBottom(), 0);
     });
-  }
 
-  addForm(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our keyword
-    if (value) {
-      this.keywords.update(keywords => [...keywords, value]);
+    if (this.chats.length === 0) {
+      this.chatService.createNewChat('New Chat');
+    } else {
+      this.chatService.setCurrentChat(this.chats[0]);
     }
-
-    // Clear the input value
-    event.chipInput!.clear();
   }
-}
-function isDragDrop(object: any): object is CdkDragDrop<string[]> {
-  return 'previousIndex' in object;
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  sendMessage() {
+    if (this.messageForm.valid && this.currentChat) {
+      const message: Message = {
+        content: this.messageForm.value.message,
+        isBot: false,
+        timestamp: new Date()
+      };
+      
+      this.chatService.addMessageToCurrentChat(message);
+      this.messageForm.reset();
+      
+      // Simulate bot response
+      setTimeout(() => {
+        const botMessage: Message = {
+          content: 'This is a simulated response from the AI assistant.',
+          isBot: true,
+          timestamp: new Date()
+        };
+        this.chatService.addMessageToCurrentChat(botMessage);
+      }, 1000);
+    }
+  }
+
+  selectChat(chat: Chat) {
+    this.chatService.setCurrentChat(chat);
+  }
+
+  deleteChat(chatId: string, event: Event) {
+    event.stopPropagation();
+    this.chatService.deleteChat(chatId);
+    this.chats = this.chatService.getAllChats();
+  }
+
+  openNewChatDialog() {
+    const chatName = prompt('Enter chat name:');
+    if (chatName) {
+      this.chatService.createNewChat(chatName);
+      this.chats = this.chatService.getAllChats();
+    }
+  }
+
+  private scrollToBottom() {
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollTop = 
+        this.scrollContainer.nativeElement.scrollHeight;
+    }
+  }
 }

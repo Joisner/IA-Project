@@ -9,7 +9,7 @@
     <div class="login-container">
       <!-- Logo y globo -->
       <div class="logo">
-        <img src="assets/mf-enterprise-logo.png" alt="MF Enterprise">
+        <img src="assets/images/logos/logo.png" alt="MF Enterprise">
         <i class="fas fa-globe globe-icon"></i>
       </div>
       
@@ -68,18 +68,20 @@
         <!-- Social buttons -->
         <div class="social-buttons">
           <button type="button" (click)="loginWithGoogle()">
-            <img src="assets/google-icon.png" alt="Google">
+            <img src="assets/images/logos/gmail.png" alt="Google">
             <span>Google</span>
           </button>
           <button type="button" (click)="loginWithFacebook()">
-            <img src="assets/facebook-icon.png" alt="Facebook">
+            <img src="assets/images/logos/facebook.png" alt="Facebook">
             <span>Facebook</span>
           </button>
         </div>
         
         <!-- Register link -->
         <div class="register-link">
-          <a routerLink="/register">¿No tienes cuenta? Regístrate</a>
+          <span routerLink="/authentication/register">¿No tienes cuenta?
+            <a [routerLink]="['/authentication/register']" class="text-decoration-none text-primary f-w-500 f-s-14">Regístrate</a>
+          </span>
         </div>
       </form>
     </div>

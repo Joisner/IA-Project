@@ -23,7 +23,12 @@ export const navItems: NavItem[] = [
     displayName: 'Login',
     iconName: 'login',
     route: '/authentication/login',
-  }
+  },
+  {
+    displayName: 'Register',
+    iconName: 'user-plus',
+    route: '/authentication/register',
+  },
  /*  {
     navCap: 'Ui Components',
   },
@@ -74,11 +79,6 @@ export const navItems: NavItem[] = [
     displayName: 'Login',
     iconName: 'login',
     route: '/authentication/login',
-  },
-  {
-    displayName: 'Register',
-    iconName: 'user-plus',
-    route: '/authentication/register',
   },
   {
     navCap: 'Extra',

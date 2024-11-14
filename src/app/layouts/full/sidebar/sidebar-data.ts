@@ -19,6 +19,11 @@ export const navItems: NavItem[] = [
     iconName: 'message-circle',
     route: '/dashboard/chat-bot-v2',
   },
+  {
+    displayName: 'Login',
+    iconName: 'login',
+    route: '/authentication/login',
+  }
  /*  {
     navCap: 'Ui Components',
   },

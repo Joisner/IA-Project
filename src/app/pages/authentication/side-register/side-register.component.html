@@ -1,62 +1,138 @@
-<div class="blank-layout-container justify-content-center align-items-center bg-light">
-  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
-    <div class="col-lg-4 d-flex align-items-center">
-      <mat-card class="cardWithShadow boxed-auth">
-        <mat-card-content class="p-32">
-          <div class="text-center">
-            <a [routerLink]="['/dashboard']">
-              <img src="./assets/images/logos/dark-logo.svg" class="align-middle m-2" alt="logo" />
-            </a>
+<div class="register-page">
+  <!-- Sección de imagen -->
+  <div class="image-section">
+    <img src="./assets/images/logos/logoai.jpg" alt="logo" class="image-logo" style="max-width: 100%; min-height: 100%; ">
+  </div>
+  
+  <!-- Sección de registro -->
+  <div class="register-section">
+    <div class="register-container">
+      <!-- Logo y globo -->
+      <div class="logo">
+        <img src="assets/mf-enterprise-logo.png" alt="MF Enterprise">
+        <i class="fas fa-globe globe-icon"></i>
+      </div>
+      
+      <h1>Crear cuenta</h1>
+      
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Nombre completo -->
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="fullName"
+            placeholder="Nombre completo"
+            [class.error]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
+          >
+          <div *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" class="error-message">
+            El nombre es requerido
           </div>
+        </div>
 
-          <div class="row m-t-24 custom-row">
-            <div class="col-12 col-sm-6">
-              <button mat-stroked-button class="w-100">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/google-icon.svg" alt="google" width="16" class="m-r-8" />
-                  Sign in with Google
-                </div>
-              </button>
-            </div>
-            <div class="col-12 col-sm-6">
-              <button mat-stroked-button class="w-100 d-flex align-items-center">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/facebook-icon.svg" alt="facebook" width="40" class="m-r-4" />
-                  Sign in with FB
-                </div>
-              </button>
-            </div>
+        <!-- Email input -->
+        <div class="form-group">
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="Correo electrónico"
+            [class.error]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+          >
+          <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="error-message">
+            Email inválido
           </div>
+        </div>
+        
+        <!-- Password input -->
+        <div class="form-group">
+          <div class="password-input">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Contraseña"
+              [class.error]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+            >
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePasswordVisibility()"
+            >
+              <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="error-message">
+            La contraseña debe tener al menos 6 caracteres
+          </div>
+        </div>
 
-          <div class="or-border m-t-30">or sign up with</div>
+        <!-- Confirm Password input -->
+        <div class="form-group">
+          <div class="password-input">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              placeholder="Confirmar contraseña"
+              [class.error]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid"
+            >
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="toggleConfirmPasswordVisibility()"
+            >
+              <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.errors?.['passwordMismatch']" class="error-message">
+            Las contraseñas no coinciden
+          </div>
+        </div>
 
-          <form class="m-t-30">
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Name</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput />
-            </mat-form-field>
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Email Adddress</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="email" />
-            </mat-form-field>
-            <!-- password -->
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" />
-            </mat-form-field>
-
-            <a [routerLink]="['/']" mat-flat-button color="primary" class="w-100">
-              Sign Up
-            </a>
-            <!-- input -->
-          </form>
-          <span class="d-block f-w-500 text-center m-t-24">Already have an Account?
-
-            <a [routerLink]="['/authentication/login']" class="text-decoration-none text-primary f-w-500 f-s-14">
-              Sign In</a>
+        <!-- Terms checkbox -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              formControlName="terms"
+            >
+            <span>Acepto los <a href="/terms" class="terms-link">términos y condiciones</a></span>
+          </label>
+          <div *ngIf="registerForm.get('terms')?.touched && registerForm.get('terms')?.invalid" class="error-message">
+            Debes aceptar los términos y condiciones
+          </div>
+        </div>
+        
+        <!-- Submit button -->
+        <button
+          type="submit"
+          class="submit-button"
+          [disabled]="registerForm.invalid"
+        >
+          Crear cuenta
+        </button>
+        
+        <!-- Divider -->
+        <div class="divider">
+          <span>O regístrate con</span>
+        </div>
+        
+        <!-- Social buttons -->
+        <div class="social-buttons">
+          <button type="button" (click)="registerWithGoogle()">
+            <img src="assets/images/svgs/google-icon.svg" alt="Google">
+            <span>Google</span>
+          </button>
+          <button type="button" (click)="registerWithFacebook()">
+            <img src="assets/images/svgs/facebook-icon.svg" alt="Facebook">
+            <span>Facebook</span>
+          </button>
+        </div>
+        
+        <!-- Login link -->
+        <div class="register-link">
+          <span routerLink="/authentication/register">¿Ya tienes una cuenta?
+            <a [routerLink]="['/authentication/login']" class="text-decoration-none text-primary f-w-500 f-s-14">Inicia sesión</a>
           </span>
-        </mat-card-content>
-      </mat-card>
+        </div>
+      </form>
     </div>
   </div>
 </div>

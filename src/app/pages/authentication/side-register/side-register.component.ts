@@ -5,6 +5,7 @@ import {
   Validators,
   FormsModule,
   ReactiveFormsModule,
+  FormBuilder
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
@@ -14,22 +15,51 @@ import { MaterialModule } from '../../../material.module';
   standalone: true,
   imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
   templateUrl: './side-register.component.html',
+  styleUrl: './side-register.component.scss'
 })
 export class AppSideRegisterComponent {
-  constructor(private router: Router) {}
+  registerForm: FormGroup;
+  showPassword = false;
+  showConfirmPassword = false;
 
-  form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    email: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-  });
-
-  get f() {
-    return this.form.controls;
+  constructor(private fb: FormBuilder) {
+    this.registerForm = this.fb.group({
+      fullName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
+      terms: [false, [Validators.requiredTrue]]
+    }, {
+      validator: this.passwordMatchValidator
+    });
   }
 
-  submit() {
-    // console.log(this.form.value);
-    this.router.navigate(['/']);
+  ngOnInit(): void {}
+
+  passwordMatchValidator(g: FormGroup) {
+    return g.get('password')?.value === g.get('confirmPassword')?.value
+      ? null : {'passwordMismatch': true};
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  onSubmit(): void {
+    if (this.registerForm.valid) {
+      console.log('Form submitted:', this.registerForm.value);
+    }
+  }
+
+  registerWithGoogle(): void {
+    console.log('Google registration clicked');
+  }
+
+  registerWithFacebook(): void {
+    console.log('Facebook registration clicked');
   }
 }

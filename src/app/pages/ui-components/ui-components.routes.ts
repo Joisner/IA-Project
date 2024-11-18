@@ -9,7 +9,7 @@ import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
 import { ChatBotComponent } from './chat-bot/chat-bot.component';
-
+import { PaymentGatewayComponent } from './payment-gateway/payment-gateway.component';
 export const UiComponentsRoutes: Routes = [
   {
     path: '',
@@ -46,6 +46,10 @@ export const UiComponentsRoutes: Routes = [
         path: 'chat-bot',
         component: ChatBotComponent,
       },
+      {
+        path: 'payment-gateway',
+        component: PaymentGatewayComponent,
+      }
     ],
   },
 ];

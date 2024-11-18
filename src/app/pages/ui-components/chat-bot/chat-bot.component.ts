@@ -1,81 +1,85 @@
-import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule} from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MaterialModule } from 'src/app/material.module';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ViewChild, ElementRef } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule} from '@angular/material/dialog';
+import { MaterialModule } from 'src/app/material.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 @Component({
   selector: 'app-chat-bot',
   standalone: true,
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule],
+  imports: [ MatIconModule,
+    MatToolbarModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatSidenavModule,
+    MatListModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MaterialModule,
+    FormsModule],
   templateUrl: './chat-bot.component.html',
   styleUrl: './chat-bot.component.scss'
 })
 export class ChatBotComponent {
-  @ViewChild('scrollContainer') scrollContainer: ElementRef;
-  messages: Message[] = [];
-  messageForm: FormGroup;
-  suggestions: string[] = [
-    'Hola',
-    '¿Cómo estás?',
-    '¿Puedes ayudarme?',
-    'Gracias'
+  conversations: Conversation[] = [
+    { id: 1, name: 'Conversation 1', lastMessage: 'Hello there!', timestamp: new Date() },
+    { id: 2, name: 'Conversation 2', lastMessage: 'How are you?', timestamp: new Date() },
   ];
 
-  constructor(private snackBar: MatSnackBar) {
-    this.messageForm = new FormGroup({
-      message: new FormControl('', [Validators.required])
-    });
-  }
+  selectedConversation: Conversation | null = null;
+  messages: Message[] = [];
+  newMessage: string = '';
 
-  ngOnInit() {
-    // Mensaje de bienvenida
-    this.addBotMessage('¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte?');
+  selectConversation(conversation: Conversation) {
+    this.selectedConversation = conversation;
+    // Aquí cargarías los mensajes de la conversación seleccionada
+    this.messages = [
+      { text: 'Hi there!', sender: 'bot', timestamp: new Date() },
+      { text: 'Hello! How can I help you today?', sender: 'user', timestamp: new Date() },
+    ];
   }
 
   sendMessage() {
-    if (this.messageForm.valid) {
-      const userMessage = this.messageForm.get('message')?.value;
-      this.addUserMessage(userMessage);
-      this.messageForm.reset();
-      
-      // Simular respuesta del bot
+    if (this.newMessage.trim()) {
+      this.messages.push({
+        text: this.newMessage,
+        sender: 'user',
+        timestamp: new Date()
+      });
+      this.newMessage = '';
+      // Aquí simularíamos una respuesta del bot
       setTimeout(() => {
-        this.simulateBotResponse(userMessage);
+        this.messages.push({
+          text: 'Thanks for your message. How else can I assist you?',
+          sender: 'bot',
+          timestamp: new Date()
+        });
       }, 1000);
     }
   }
-
-  private addUserMessage(content: string) {
-    this.messages.push({
-      content,
-      isBot: false,
-      timestamp: new Date()
-    });
-  }
-
-  private addBotMessage(content: string) {
-    this.messages.push({
-      content,
-      isBot: true,
-      timestamp: new Date()
-    });
-  }
-
-  private simulateBotResponse(userMessage: string) {
-    // Aquí puedes implementar la lógica real de tu IA
-    const responses = [
-      'Entiendo lo que dices.',
-      '¿Podrías darme más detalles?',
-      'Déjame pensar en eso...',
-      '¡Interesante pregunta!',
-    ];
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-    this.addBotMessage(randomResponse);
-  }
 }
+
 interface Message {
-  content: string;
-  isBot: boolean;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+}
+
+interface Conversation {
+  id: number;
+  name: string;
+  lastMessage: string;
   timestamp: Date;
 }

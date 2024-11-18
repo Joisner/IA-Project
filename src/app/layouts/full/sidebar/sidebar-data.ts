@@ -29,6 +29,11 @@ export const navItems: NavItem[] = [
     iconName: 'user-plus',
     route: '/authentication/register',
   },
+  {
+    displayName: 'Payment Gateway',
+    iconName: 'user-plus',
+    route: '/ui-components/payment-gateway',
+  },
  /*  {
     navCap: 'Ui Components',
   },

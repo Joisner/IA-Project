@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { StarterComponent } from './starter/starter.component';
 import { ChatBotComponent } from './ui-components/chat-bot/chat-bot.component';
 import { AppChipsComponent } from './ui-components/chips/chips.component';
+import { PaymentGatewayComponent } from './ui-components/payment-gateway/payment-gateway.component';
 export const PagesRoutes: Routes = [
   {
     path: '',

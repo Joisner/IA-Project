@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-side-login',
   standalone: true,
@@ -20,6 +21,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
+    CommonModule
   ],
   templateUrl: './side-login.component.html',
   styleUrl: './side-login.component.scss',

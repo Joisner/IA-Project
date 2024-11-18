@@ -9,7 +9,8 @@ import {
   signOut,
   UserCredential,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  getIdToken
 } from 'firebase/auth';
 import { environment } from 'src/app/env/environment';
 
@@ -17,44 +18,51 @@ import { environment } from 'src/app/env/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api';
+  private apiUrl = 'http://localhost:5000/api'; // URL de tu backend
   private auth;
   private googleProvider;
 
   constructor(private http: HttpClient) {
-    // Initialize Firebase
+    // Inicializa Firebase
     const app = initializeApp(environment.firebase);
     this.auth = getAuth(app);
     this.googleProvider = new GoogleAuthProvider();
   }
 
-  // Gmail Sign In
+  // Autenticación con Google
   signInWithGoogle(): Observable<UserCredential> {
-    debugger;
     return from(signInWithPopup(this.auth, this.googleProvider));
   }
 
-  // Email/Password Sign In
+  // Inicio de sesión con email/contraseña
   login(email: string, password: string): Observable<UserCredential> {
-    debugger;
     return from(signInWithEmailAndPassword(this.auth, email, password));
   }
 
-  // Email/Password Registration
-  register(email: string, password: string): Observable<UserCredential> {
-    debugger;
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  // Registro con email/contraseña
+  register(email: string, password: string): Observable<any> {
+    return from(
+      createUserWithEmailAndPassword(this.auth, email, password).then(async (result) => {
+        const token = await getIdToken(result.user); // Obtener el token del usuario
+        return { user: result.user, token }; // Retornar usuario y token
+      })
+    );
   }
 
-  // Logout
+  // Cerrar sesión
   logout(): Observable<void> {
-    debugger;
     return from(signOut(this.auth));
   }
 
-  // Sync with backend
+  // Sincronización del usuario con el backend
   syncUserWithBackend(user: any): Observable<any> {
-    debugger;
-    return this.http.post(`${this.apiUrl}/sync-user`, { user });
+    // Envía solo los datos esenciales
+    const userPayload = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL
+    };
+    return this.http.post(`${this.apiUrl}/sync-user`, userPayload);
   }
 }

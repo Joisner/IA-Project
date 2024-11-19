@@ -1,95 +1,145 @@
 <div class="payment-container">
   <div class="payment-form">
-    <h2>Pago Seguro con Stripe</h2>
+    <h2 class="text-center mb-4" style="font-size: 24px; color: #333;">Pago Seguro</h2>
+    
     <form [formGroup]="paymentForm" (ngSubmit)="handleSubmit()">
-      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched}">
-        <label for="fullName">Nombre Completo</label>
-        <input 
-          type="text" 
-          id="fullName" 
-          formControlName="fullName" 
-          placeholder="Juan Pérez"
-        >
-        <div *ngIf="paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched" class="text-red-500 text-sm">
-          Nombre válido requerido
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="form-group">
+          <label for="fullName" class="block mb-2">Nombre Completo</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            formControlName="fullName" 
+            placeholder="Nombre y Apellidos"
+          >
+          <div 
+            *ngIf="paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched" 
+            class="text-red-500 text-sm mt-1"
+          >
+            Nombre completo requerido
+          </div>
         </div>
-      </div>
-      
-      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched}">
-        <label for="email">Correo Electrónico</label>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email"
-          placeholder="juan.perez@ejemplo.com"
-        >
-        <div *ngIf="paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched" class="text-red-500 text-sm">
-          Correo electrónico válido requerido
+
+        <div class="form-group">
+          <label for="email" class="block mb-2">Correo Electrónico</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email"
+            placeholder="usuario@ejemplo.com"
+          >
+          <div 
+            *ngIf="paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched" 
+            class="text-red-500 text-sm mt-1"
+          >
+            Correo electrónico inválido
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="billingAddress">Dirección de Facturación</label>
+      <div class="form-group mb-4">
+        <label for="billingAddress" class="block mb-2">Dirección de Facturación</label>
         <input 
           type="text" 
           id="billingAddress" 
           formControlName="billingAddress"
-          placeholder="Calle Principal 123"
+          placeholder="Calle, Número, Piso"
         >
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched}">
-          <label for="city">Ciudad</label>
+      <div class="grid grid-cols-3 gap-4 mb-4">
+        <div class="form-group">
+          <label for="city" class="block mb-2">Ciudad</label>
           <input 
             type="text" 
             id="city" 
             formControlName="city"
             placeholder="Madrid"
           >
-          <div *ngIf="paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched" class="text-red-500 text-sm">
-            Campo requerido
+          <div 
+            *ngIf="paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched" 
+            class="text-red-500 text-sm mt-1"
+          >
+            Ciudad requerida
           </div>
         </div>
-        <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched}">
-          <label for="postalCode">Código Postal</label>
+
+        <div class="form-group">
+          <label for="postalCode" class="block mb-2">Código Postal</label>
           <input 
             type="text" 
             id="postalCode" 
             formControlName="postalCode"
             placeholder="28001"
           >
-          <div *ngIf="paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched" class="text-red-500 text-sm">
-            Código postal válido requerido
+          <div 
+            *ngIf="paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched" 
+            class="text-red-500 text-sm mt-1"
+          >
+            Código postal inválido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="country" class="block mb-2">País</label>
+          <select 
+            id="country" 
+            formControlName="country"
+          >
+            <option value="">Seleccione un país</option>
+            <option value="ES">España</option>
+            <option value="US">Estados Unidos</option>
+            <option value="FR">Francia</option>
+          </select>
+          <div 
+            *ngIf="paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched" 
+            class="text-red-500 text-sm mt-1"
+          >
+            País requerido
           </div>
         </div>
       </div>
 
-      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched}">
-        <label for="country">País</label>
-        <select id="country" formControlName="country">
-          <option value="">Seleccione un país</option>
-          <option value="ES">España</option>
-          <option value="US">Estados Unidos</option>
-          <option value="FR">Francia</option>
-        </select>
-        <div *ngIf="paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched" class="text-red-500 text-sm">
-          Campo requerido
+      <div class="form-group mb-4">
+        <label for="card-element" class="block mb-2">Detalles de la Tarjeta</label>
+        <div id="card-element" style="border: 1px solid #ccc; padding: 12px; border-radius: 4px;"></div>
+        <div 
+          id="card-errors" 
+          role="alert" 
+          class="text-red-500 text-sm mt-1"
+        ></div>
+      </div>
+
+      <div class="form-group mb-4">
+        <label for="amount" class="block mb-2">Monto a Pagar</label>
+        <input 
+          type="number" 
+          id="amount" 
+          formControlName="amount"
+          placeholder="0.00"
+          step="0.01"
+          min="0"
+        >
+        <div 
+          *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched" 
+          class="text-red-500 text-sm mt-1"
+        >
+          Monto inválido
         </div>
       </div>
 
       <div class="form-group">
-        <label for="card-element">Detalles de la Tarjeta</label>
-        <div id="card-element"></div>
-        <div id="card-errors" role="alert"></div>
+        <button 
+          type="submit" 
+          [disabled]="!stripe || processing || paymentForm.invalid"
+        >
+          {{ processing ? 'Procesando Pago...' : 'Pagar Ahora' }}
+        </button>
       </div>
-
-      <button 
-        type="submit" 
-        [disabled]="!stripe || processing || paymentForm.invalid"
-      >
-        {{ processing ? 'Procesando...' : 'Pagar ahora' }}
-      </button>
     </form>
+
+    <div class="text-center text-sm mt-4" style="color: #666;">
+      🔒 Pago seguro con Stripe
+    </div>
   </div>
 </div>

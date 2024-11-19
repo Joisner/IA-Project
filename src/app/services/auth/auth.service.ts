@@ -18,7 +18,7 @@ import { HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://5000-idx-auth-servcie-ia-app-1731683870257.cluster-2xid2zxbenc4ixa74rpk7q7fyk.cloudworkstations.dev/auth'; // URL de tu backend
+  private apiUrl = 'https://5000-idx-auth-servcie-ia-app-1731683870257.cluster-2xid2zxbenc4ixa74rpk7q7fyk.cloudworkstations.dev/index'; // URL de tu backend
   private auth;
   private googleProvider;
 

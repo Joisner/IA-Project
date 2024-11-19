@@ -23,11 +23,13 @@ export class PaymentGatewayComponent implements OnInit, OnDestroy {
       billingAddress: ['', Validators.required],
       city: ['', Validators.required],
       postalCode: ['', [Validators.required, Validators.pattern('^[0-9]{5}$')]],
-      country: ['', Validators.required]
+      country: ['', Validators.required],
+      amount: ['', [Validators.required, Validators.min(0.01)]]
     });
   }
 
   async ngOnInit() {
+    debugger;
     this.stripe = await loadStripe('pk_test_51QMYLqLfrduBrebjrWiA1VlQpyZyza0dfODV9CuyYRLACdLnPUVpHsYxJchJJULa4plPxMJw3MTS9bIYVmpb67rN00ut164eqY');
     const elements = this.stripe.elements();
     
@@ -61,6 +63,7 @@ export class PaymentGatewayComponent implements OnInit, OnDestroy {
   }
 
   async handleSubmit() {
+    debugger;
     if (this.paymentForm.invalid || this.processing) {
       return;
     }
@@ -79,7 +82,8 @@ export class PaymentGatewayComponent implements OnInit, OnDestroy {
 
       const paymentData = {
         ...this.paymentForm.value,
-        token: token
+        stripeToken: token.id,
+        amount: parseFloat(this.paymentForm.get('amount')!.value) * 100
       };
 
       // Simular envío al servidor

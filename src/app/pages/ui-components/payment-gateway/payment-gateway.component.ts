@@ -1,18 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { loadStripe } from '@stripe/stripe-js';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-payment-gateway',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './payment-gateway.component.html',
   styleUrl: './payment-gateway.component.scss'
 })
-export class PaymentGatewayComponent {
+export class PaymentGatewayComponent implements OnInit, OnDestroy {
   stripe: any;
   card: any;
   processing = false;
+  paymentForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.paymentForm = this.fb.group({
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      billingAddress: ['', Validators.required],
+      city: ['', Validators.required],
+      postalCode: ['', [Validators.required, Validators.pattern('^[0-9]{5}$')]],
+      country: ['', Validators.required]
+    });
+  }
 
   async ngOnInit() {
     this.stripe = await loadStripe('pk_test_51QMYLqLfrduBrebjrWiA1VlQpyZyza0dfODV9CuyYRLACdLnPUVpHsYxJchJJULa4plPxMJw3MTS9bIYVmpb67rN00ut164eqY');
@@ -30,8 +43,8 @@ export class PaymentGatewayComponent {
           }
         },
         invalid: {
-          color: '#fa755a',
-          iconColor: '#fa755a'
+          color: '#dc2626',
+          iconColor: '#dc2626'
         }
       }
     });
@@ -48,6 +61,10 @@ export class PaymentGatewayComponent {
   }
 
   async handleSubmit() {
+    if (this.paymentForm.invalid || this.processing) {
+      return;
+    }
+
     this.processing = true;
 
     try {
@@ -60,12 +77,23 @@ export class PaymentGatewayComponent {
         return;
       }
 
-      // Aquí deberías enviar el token a tu servidor para procesar el pago
-      console.log('Token generado:', token);
-      // Simular una respuesta del servidor
+      const paymentData = {
+        ...this.paymentForm.value,
+        token: token
+      };
+
+      // Simular envío al servidor
+      console.log('Datos de pago:', paymentData);
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      alert('¡Pago procesado con éxito!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Pago procesado con éxito',
+        showConfirmButton: true,
+        timer: 1500
+      });
+
+      this.paymentForm.reset();
       
     } catch (err: any) {
       console.error('Error en el pago:', err);

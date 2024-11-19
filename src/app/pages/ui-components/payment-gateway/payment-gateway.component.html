@@ -1,54 +1,95 @@
-<!-- <div class="payment-container">
-    <div class="payment-form">
-      <h2>Payment Details</h2>
+<div class="payment-container">
+  <div class="payment-form">
+    <h2>Pago Seguro con Stripe</h2>
+    <form [formGroup]="paymentForm" (ngSubmit)="handleSubmit()">
+      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched}">
+        <label for="fullName">Nombre Completo</label>
+        <input 
+          type="text" 
+          id="fullName" 
+          formControlName="fullName" 
+          placeholder="Juan Pérez"
+        >
+        <div *ngIf="paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched" class="text-red-500 text-sm">
+          Nombre válido requerido
+        </div>
+      </div>
       
-      <form (ngSubmit)="handleSubmit()" #paymentForm="ngForm">
-        <div class="form-group">
-          <label for="card-element">Credit or debit card</label>
-          <div id="card-element"></div>
-          <div id="card-errors" role="alert"></div>
+      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched}">
+        <label for="email">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          placeholder="juan.perez@ejemplo.com"
+        >
+        <div *ngIf="paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched" class="text-red-500 text-sm">
+          Correo electrónico válido requerido
         </div>
-        
-        <button type="submit" [disabled]="!stripe || processing">
-          {{ processing ? 'Processing...' : 'Pay' }}
-        </button>
-      </form>
-    </div>
-  </div> -->
-<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-  <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-    <div
-      class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl">
-    </div>
-    <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-      <div class="max-w-md mx-auto">
-        <div>
-          <h1 class="text-2xl font-semibold text-center">Pago Seguro con Stripe</h1>
-        </div>
-        <div class="divide-y divide-gray-200">
-          <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-            <div class="flex items-center space-x-4">
-              <span class="text-2xl">€</span>
-              <span class="text-4xl font-bold">49.99</span>
-            </div>
-            <p class="text-sm text-gray-500">Pago único por el producto/servicio</p>
+      </div>
+
+      <div class="form-group">
+        <label for="billingAddress">Dirección de Facturación</label>
+        <input 
+          type="text" 
+          id="billingAddress" 
+          formControlName="billingAddress"
+          placeholder="Calle Principal 123"
+        >
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched}">
+          <label for="city">Ciudad</label>
+          <input 
+            type="text" 
+            id="city" 
+            formControlName="city"
+            placeholder="Madrid"
+          >
+          <div *ngIf="paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched" class="text-red-500 text-sm">
+            Campo requerido
           </div>
-          <div class="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
-            <form (ngSubmit)="handleSubmit()" #paymentForm="ngForm">
-              <div class="mt-4">
-                <div id="card-element"
-                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                </div>
-              </div>
-              <div id="card-errors" role="alert" class="mt-2 text-sm text-red-600"></div>
-              <button type="submit" [disabled]="!stripe || processing"
-                class="mt-6 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ processing ? 'Procesando...' : 'Pagar ahora' }}
-              </button>
-            </form>
+        </div>
+        <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched}">
+          <label for="postalCode">Código Postal</label>
+          <input 
+            type="text" 
+            id="postalCode" 
+            formControlName="postalCode"
+            placeholder="28001"
+          >
+          <div *ngIf="paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched" class="text-red-500 text-sm">
+            Código postal válido requerido
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="form-group" [ngClass]="{'ng-invalid': paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched}">
+        <label for="country">País</label>
+        <select id="country" formControlName="country">
+          <option value="">Seleccione un país</option>
+          <option value="ES">España</option>
+          <option value="US">Estados Unidos</option>
+          <option value="FR">Francia</option>
+        </select>
+        <div *ngIf="paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched" class="text-red-500 text-sm">
+          Campo requerido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="card-element">Detalles de la Tarjeta</label>
+        <div id="card-element"></div>
+        <div id="card-errors" role="alert"></div>
+      </div>
+
+      <button 
+        type="submit" 
+        [disabled]="!stripe || processing || paymentForm.invalid"
+      >
+        {{ processing ? 'Procesando...' : 'Pagar ahora' }}
+      </button>
+    </form>
   </div>
 </div>

@@ -1,33 +1,33 @@
 <div class="chat-container">
   <div class="conversation-list">
-    <h2>Conversations</h2>
+    <div class="header">
+      <h2>Conversations</h2>
+      <i class="material-icons add-icon" (click)="newChat()">add_box</i>
+    </div>
     <ul>
-      @for (conv of conversations; track conv.id) {
-        <li (click)="selectConversation(conv)" [class.active]="conv === selectedConversation">
-          <strong>{{ conv.name }}</strong>
-          <p>{{ conv.lastMessage }}</p>
+      @for (conv of conversations; track trackByConversationId(0, conv)) {
+      <li (click)="selectConversation(conv)" [class.active]="conv === selectedConversation">
+        <div class="conversation-content">
+          <strong>{{ conv.lastMessage }}</strong><br>
           <small>{{ conv.timestamp | date:'short' }}</small>
-        </li>
+        </div>
+        <i class="material-icons action-icon" (click)="deleteConversation(conv); $event.stopPropagation()">delete</i>
+      </li>
       }
     </ul>
   </div>
   <div class="chat-area">
     <div class="chat-messages">
       @for (message of messages; track message) {
-        <div class="message" [class.user-message]="message.sender === 'user'">
-          <div class="message-content">{{ message.text }}</div>
-          <div class="message-timestamp">{{ message.timestamp | date:'short' }}</div>
-        </div>
+      <div class="message" [class.user-message]="message.sender === 'user'">
+        <div class="message-content">{{ message.text }}</div>
+        <div class="message-timestamp">{{ message.timestamp | date:'short' }}</div>
+      </div>
       }
     </div>
     <div class="chat-input">
-      <input 
-        type="text" 
-        [(ngModel)]="newMessage" 
-        (keyup.enter)="sendMessage()"
-        placeholder="Type your message..."
-      >
-      <button (click)="sendMessage()">Send</button>
+      <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
+      <button (click)="sendMessage()"><i class="material-icons">send</i></button>
     </div>
   </div>
 </div>

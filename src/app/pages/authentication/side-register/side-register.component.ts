@@ -21,7 +21,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AppSideRegisterComponent {
   registerForm: FormGroup;
-  showPassword = false;
+  showPassword = true;
   showConfirmPassword = false;
   errorMessage: string = '';
 
@@ -101,6 +101,7 @@ export class AppSideRegisterComponent {
   }
 
   private syncUser(user: any): void {
+    debugger;
     try {
       debugger;
       this.authService.syncUserWithBackend(user).subscribe({

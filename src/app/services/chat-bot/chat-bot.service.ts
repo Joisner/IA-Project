@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Chat, Message } from 'src/app/core/models/chat-bot.model';
 
 @Injectable({
@@ -10,7 +12,7 @@ export class ChatService {
   private currentChatSubject = new BehaviorSubject<Chat | null>(null);
   currentChat$ = this.currentChatSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.loadChatsFromStorage();
   }
 
@@ -53,7 +55,7 @@ export class ChatService {
       currentChat.messages.push(message);
       currentChat.lastUpdated = new Date();
       this.saveChatsToStorage();
-      this.currentChatSubject.next({...currentChat});
+      this.currentChatSubject.next({ ...currentChat });
     }
   }
 
@@ -64,4 +66,22 @@ export class ChatService {
       this.currentChatSubject.next(this.chats[0] || null);
     }
   }
+
+  public sendPromptChat(model: string, data: object): Observable<any> {
+    try {
+      debugger;
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' })
+      const modelParam = new HttpParams().set('model', model)
+      return this.http.post(`http://192.168.1.36:5000/chat`, data, { params: modelParam, headers: headers }).pipe(
+        map((message) => {
+          debugger;
+          return message
+        })
+      );
+    }
+    catch (error) {
+      throw new Error(`${error}`)
+    }
+  }
+
 }

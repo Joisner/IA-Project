@@ -1,19 +1,24 @@
 <div class="payment-container">
   <div class="payment-form">
-    <h2 class="text-center mb-4" style="font-size: 24px; color: #333;">Pago Seguro</h2>
-    
+    <h2 class="text-center mb-4" style="font-size: 24px; color: #333">
+      Pago Seguro
+    </h2>
+
     <form [formGroup]="paymentForm" (ngSubmit)="handleSubmit()">
       <div class="grid grid-cols-2 gap-4 mb-4">
         <div class="form-group">
           <label for="fullName" class="block mb-2">Nombre Completo</label>
-          <input 
-            type="text" 
-            id="fullName" 
-            formControlName="fullName" 
+          <input
+            type="text"
+            id="fullName"
+            formControlName="fullName"
             placeholder="Nombre y Apellidos"
-          >
-          <div 
-            *ngIf="paymentForm.get('fullName')?.invalid && paymentForm.get('fullName')?.touched" 
+          />
+          <div
+            *ngIf="
+              paymentForm.get('fullName')?.invalid &&
+              paymentForm.get('fullName')?.touched
+            "
             class="text-red-500 text-sm mt-1"
           >
             Nombre completo requerido
@@ -22,14 +27,17 @@
 
         <div class="form-group">
           <label for="email" class="block mb-2">Correo Electrónico</label>
-          <input 
-            type="email" 
-            id="email" 
+          <input
+            type="email"
+            id="email"
             formControlName="email"
             placeholder="usuario@ejemplo.com"
-          >
-          <div 
-            *ngIf="paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched" 
+          />
+          <div
+            *ngIf="
+              paymentForm.get('email')?.invalid &&
+              paymentForm.get('email')?.touched
+            "
             class="text-red-500 text-sm mt-1"
           >
             Correo electrónico inválido
@@ -38,26 +46,31 @@
       </div>
 
       <div class="form-group mb-4">
-        <label for="billingAddress" class="block mb-2">Dirección de Facturación</label>
-        <input 
-          type="text" 
-          id="billingAddress" 
+        <label for="billingAddress" class="block mb-2"
+          >Dirección de Facturación</label
+        >
+        <input
+          type="text"
+          id="billingAddress"
           formControlName="billingAddress"
           placeholder="Calle, Número, Piso"
-        >
+        />
       </div>
 
       <div class="grid grid-cols-3 gap-4 mb-4">
         <div class="form-group">
           <label for="city" class="block mb-2">Ciudad</label>
-          <input 
-            type="text" 
-            id="city" 
+          <input
+            type="text"
+            id="city"
             formControlName="city"
             placeholder="Madrid"
-          >
-          <div 
-            *ngIf="paymentForm.get('city')?.invalid && paymentForm.get('city')?.touched" 
+          />
+          <div
+            *ngIf="
+              paymentForm.get('city')?.invalid &&
+              paymentForm.get('city')?.touched
+            "
             class="text-red-500 text-sm mt-1"
           >
             Ciudad requerida
@@ -66,14 +79,17 @@
 
         <div class="form-group">
           <label for="postalCode" class="block mb-2">Código Postal</label>
-          <input 
-            type="text" 
-            id="postalCode" 
+          <input
+            type="text"
+            id="postalCode"
             formControlName="postalCode"
             placeholder="28001"
-          >
-          <div 
-            *ngIf="paymentForm.get('postalCode')?.invalid && paymentForm.get('postalCode')?.touched" 
+          />
+          <div
+            *ngIf="
+              paymentForm.get('postalCode')?.invalid &&
+              paymentForm.get('postalCode')?.touched
+            "
             class="text-red-500 text-sm mt-1"
           >
             Código postal inválido
@@ -82,17 +98,17 @@
 
         <div class="form-group">
           <label for="country" class="block mb-2">País</label>
-          <select 
-            id="country" 
-            formControlName="country"
-          >
+          <select id="country" formControlName="country">
             <option value="">Seleccione un país</option>
             <option value="ES">España</option>
             <option value="US">Estados Unidos</option>
             <option value="FR">Francia</option>
           </select>
-          <div 
-            *ngIf="paymentForm.get('country')?.invalid && paymentForm.get('country')?.touched" 
+          <div
+            *ngIf="
+              paymentForm.get('country')?.invalid &&
+              paymentForm.get('country')?.touched
+            "
             class="text-red-500 text-sm mt-1"
           >
             País requerido
@@ -101,44 +117,52 @@
       </div>
 
       <div class="form-group mb-4">
-        <label for="card-element" class="block mb-2">Detalles de la Tarjeta</label>
-        <div id="card-element" style="border: 1px solid #ccc; padding: 12px; border-radius: 4px;"></div>
-        <div 
-          id="card-errors" 
-          role="alert" 
+        <label for="card-element" class="block mb-2"
+          >Detalles de la Tarjeta</label
+        >
+        <div
+          id="card-element"
+          style="border: 1px solid #ccc; padding: 12px; border-radius: 4px"
+        ></div>
+        <div
+          id="card-errors"
+          role="alert"
           class="text-red-500 text-sm mt-1"
         ></div>
       </div>
 
       <div class="form-group mb-4">
         <label for="amount" class="block mb-2">Monto a Pagar</label>
-        <input 
-          type="number" 
-          id="amount" 
+        <input
+          type="number"
+          id="amount"
           formControlName="amount"
           placeholder="0.00"
           step="0.01"
           min="0"
-        >
-        <div 
-          *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched" 
+        />
+        <div
+          *ngIf="
+            paymentForm.get('amount')?.invalid &&
+            paymentForm.get('amount')?.touched
+          "
           class="text-red-500 text-sm mt-1"
         >
           Monto inválido
         </div>
       </div>
-
+      <br />
       <div class="form-group">
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           [disabled]="!stripe || processing || paymentForm.invalid"
         >
-          {{ processing ? 'Procesando Pago...' : 'Pagar Ahora' }}
+          {{ processing ? "Procesando Pago..." : "Pagar Ahora" }}
         </button>
       </div>
     </form>
 
-    <div class="text-center text-sm mt-4" style="color: #666;">
+    <div class="text-center text-sm mt-4" style="color: #666">
       🔒 Pago seguro con Stripe
     </div>
   </div>

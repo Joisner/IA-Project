@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,7 +12,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MaterialModule } from 'src/app/material.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ChatService } from 'src/app/services/chat-bot/chat-bot.service';
 import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-chat-bot',
   standalone: true,
@@ -43,6 +45,10 @@ export class ChatBotComponent {
   messages: Message[] = [];
   newMessage: string = '';
 
+  constructor(private chat: ChatService) {
+
+  }
+
   trackByConversationId(index: number, conversation: Conversation): number {
     return conversation.id;
   }
@@ -57,23 +63,31 @@ export class ChatBotComponent {
   }
 
   sendMessage() {
-    if (this.newMessage.trim()) {
-      this.messages.push({
-        text: this.newMessage,
-        sender: 'user',
-        timestamp: new Date()
-      });
-      this.newMessage = '';
-      this.scrollToBottom();
-      // Aquí simularíamos una respuesta del bot
-      setTimeout(() => {
+    try {
+      debugger;
+      const model: string = 'grok-beta'
+      if (this.newMessage.trim()) {
         this.messages.push({
-          text: 'Thanks for your message. How else can I assist you?',
-          sender: 'bot',
+          text: this.newMessage,
+          sender: 'user',
           timestamp: new Date()
         });
+        const prompt = this.newMessage
+        this.newMessage = '';
         this.scrollToBottom();
-      }, 1000);
+        ////////////////
+        this.chat.sendPromptChat(model, { prompt: prompt }).subscribe((message) => {
+          this.messages.push({
+            text: message.data,
+            sender: 'bot',
+            timestamp: new Date()
+          });
+          this.scrollToBottom();
+        })
+      }
+
+    } catch (error) {
+      throw new Error(`Error trying to identify ${model} model response`)
     }
   }
   deleteConversation(conversation: Conversation) {

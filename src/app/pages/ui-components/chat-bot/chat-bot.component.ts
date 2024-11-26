@@ -54,6 +54,7 @@ export class ChatBotComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    debugger;
     const renderer = new marked.Renderer();
 
     // Sobrescribir el método `code` del renderer
@@ -70,10 +71,12 @@ export class ChatBotComponent implements OnInit {
   }
 
   async renderMarkdown(text: string): Promise<string> {
+    debugger;
     return marked.parse(text);
   }
 
   typeText(text: string, callback: (partialText: string) => void) {
+    debugger;
     this.isTyping = true;
     let currentIndex = 0;
     const typingInterval = setInterval(() => {
@@ -102,68 +105,91 @@ export class ChatBotComponent implements OnInit {
       { text: 'Hi there!', sender: 'bot', timestamp: new Date() },
       { text: 'Hello! How can I help you today?', sender: 'user', timestamp: new Date() },
     ];
+    this.scrollToBottom();
   }
 
   sendMessage() {
-    try {
-      debugger;
-      if (this.newMessage.trim()) {
-        // Agregar mensaje del usuario
-        const userMessage: Message = {
-          text: this.newMessage,
-          sender: 'user',
-          timestamp: new Date()
-        };
-        this.messages.push(userMessage);
-
-        // Preparar para la respuesta del bot
-        const botTypingMessage: Message = {
-          text: '...',
-          sender: 'bot',
-          timestamp: new Date()
-        };
-        this.messages.push(botTypingMessage);
-
-        const prompt = this.newMessage;
-        this.newMessage = '';
-        this.scrollToBottom();
-
-        // Enviar prompt al servicio
-        this.chatService.sendPromptChat('grok-beta', { prompt: prompt })
-          .subscribe({
-            next: (response) => {
-              // Eliminar el mensaje de "typing"
-              this.messages = this.messages.filter(m => m.text !== '...');
-
-              // Interpolar la respuesta del bot
-              this.typeText(response.data, (partialText) => {
-                const botMessage: Message = {
-                  text: partialText,
-                  sender: 'bot',
-                  timestamp: new Date()
-                };
-
-                // Reemplazar o agregar el mensaje del bot
-                const existingBotMessageIndex = this.messages.length - 1 - this.messages.slice().reverse().findIndex(m => m.sender === 'bot');
-                if (existingBotMessageIndex !== -1) {
-                  this.messages[existingBotMessageIndex] = botMessage;
-                } else {
-                  this.messages.push(botMessage);
-                }
-
-                this.scrollToBottom();
-              });
-            },
-            error: (error: any) => {
-              console.error('Error en la respuesta del chat:', error);
-              Swal.fire('Error', 'No se pudo obtener la respuesta del bot', 'error');
-            }
-          });
-      }
-    } catch (error) {
-      throw new Error(`Error trying to identify ${model} model response`)
+    if (this.newMessage.trim()) {
+      // Agregar mensaje del usuario
+      const userMessage: Message = {
+        text: this.newMessage,
+        sender: 'user',
+        timestamp: new Date()
+      };
+      this.messages.push(userMessage);
+      
+      // Preparar para la respuesta del bot con un mensaje de typing
+      const botTypingMessage: Message = {
+        text: '...',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      this.messages.push(botTypingMessage);
+      
+      const prompt = this.newMessage;
+      this.newMessage = '';
+      this.scrollToBottom();
+  
+      // Enviar prompt al servicio
+      this.chatService.sendPromptChat('grok-beta', { prompt: prompt })
+        .subscribe({
+          next: (response) => {
+            // Eliminar el mensaje de "typing"
+            this.messages = this.messages.filter(m => m.text !== '...');
+            
+            // Variable para almacenar el texto completo
+            let fullBotResponse = response.data;
+            
+            // Interpolar la respuesta del bot
+            this.typeText(fullBotResponse, (partialText) => {
+              const botMessage: Message = {
+                text: partialText,
+                sender: 'bot',
+                timestamp: new Date()
+              };
+              
+              // Reemplazar el último mensaje del bot con el texto parcial
+              const existingBotMessageIndex = this.messages.findLastIndex(m => m.sender === 'bot');
+              if (existingBotMessageIndex !== -1) {
+                this.messages[existingBotMessageIndex] = botMessage;
+              } else {
+                this.messages.push(botMessage);
+              }
+              
+              this.scrollToBottom();
+            });
+  
+            // Una vez terminada la interpolación, agregar el mensaje completo
+            setTimeout(() => {
+              const finalBotMessage: Message = {
+                text: fullBotResponse,
+                sender: 'bot',
+                timestamp: new Date()
+              };
+              
+              // Reemplazar el último mensaje parcial con el mensaje completo
+              this.messages[this.messages.length - 1] = finalBotMessage;
+              this.scrollToBottom();
+            }, fullBotResponse.length * 20 + 100); // Tiempo basado en la velocidad de escritura
+          },
+          error: (error) => {
+            console.error('Error en la respuesta del chat:', error);
+            // Eliminar el mensaje de typing
+            this.messages = this.messages.filter(m => m.text !== '...');
+            
+            // Agregar mensaje de error
+            const errorMessage: Message = {
+              text: 'Hubo un error al obtener la respuesta. Por favor, inténtalo de nuevo.',
+              sender: 'bot',
+              timestamp: new Date()
+            };
+            this.messages.push(errorMessage);
+            this.scrollToBottom();
+          }
+        });
     }
   }
+  
   deleteConversation(conversation: Conversation) {
     Swal.fire({
       title: 'Are you sure?',

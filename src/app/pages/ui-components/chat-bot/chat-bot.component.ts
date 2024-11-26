@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { Component, ElementRef, model, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -14,6 +14,8 @@ import { MaterialModule } from 'src/app/material.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ChatService } from 'src/app/services/chat-bot/chat-bot.service';
 import Swal from 'sweetalert2';
+import { marked } from 'marked';
+import hljs from 'highlight.js';
 
 @Component({
   selector: 'app-chat-bot',
@@ -35,7 +37,8 @@ import Swal from 'sweetalert2';
   templateUrl: './chat-bot.component.html',
   styleUrl: './chat-bot.component.scss'
 })
-export class ChatBotComponent {
+export class ChatBotComponent implements OnInit {
+  @ViewChild('chatMessages') chatMessages!: ElementRef;
   conversations: Conversation[] = [
     { id: 1, name: 'Conversation 1', lastMessage: 'Hello there!', timestamp: new Date() },
     { id: 2, name: 'Conversation 2', lastMessage: 'How are you?', timestamp: new Date() },
@@ -44,14 +47,53 @@ export class ChatBotComponent {
   selectedConversation: Conversation | null = null;
   messages: Message[] = [];
   newMessage: string = '';
+  isTyping: boolean = false;
 
-  constructor(private chat: ChatService) {
+  constructor(private chatService: ChatService) {
 
+  }
+
+  ngOnInit(): void {
+    const renderer = new marked.Renderer();
+
+    // Sobrescribir el método `code` del renderer
+    renderer.code = ({ text, lang = 'plaintext' }) => {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      const highlighted = hljs.highlight(text, { language: language || 'plaintext' }).value;
+      return `<pre><code class="hljs ${language}">${highlighted}</code></pre>`;
+    };
+
+    // Configurar las opciones globales de `marked`
+    marked.use({
+      renderer, // Usa el renderer personalizado
+    });
+  }
+
+  async renderMarkdown(text: string): Promise<string> {
+    return marked.parse(text);
+  }
+
+  typeText(text: string, callback: (partialText: string) => void) {
+    this.isTyping = true;
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex < text.length) {
+        callback(text.slice(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        this.isTyping = false;
+      }
+    }, 20); // Velocidad de escritura
   }
 
   trackByConversationId(index: number, conversation: Conversation): number {
     return conversation.id;
   }
+
+
+
+
 
   selectConversation(conversation: Conversation) {
     this.selectedConversation = conversation;
@@ -65,27 +107,59 @@ export class ChatBotComponent {
   sendMessage() {
     try {
       debugger;
-      const model: string = 'grok-beta'
       if (this.newMessage.trim()) {
-        this.messages.push({
+        // Agregar mensaje del usuario
+        const userMessage: Message = {
           text: this.newMessage,
           sender: 'user',
           timestamp: new Date()
-        });
-        const prompt = this.newMessage
+        };
+        this.messages.push(userMessage);
+
+        // Preparar para la respuesta del bot
+        const botTypingMessage: Message = {
+          text: '...',
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        this.messages.push(botTypingMessage);
+
+        const prompt = this.newMessage;
         this.newMessage = '';
         this.scrollToBottom();
-        ////////////////
-        this.chat.sendPromptChat(model, { prompt: prompt }).subscribe((message) => {
-          this.messages.push({
-            text: message.data,
-            sender: 'bot',
-            timestamp: new Date()
-          });
-          this.scrollToBottom();
-        })
-      }
 
+        // Enviar prompt al servicio
+        this.chatService.sendPromptChat('grok-beta', { prompt: prompt })
+          .subscribe({
+            next: (response) => {
+              // Eliminar el mensaje de "typing"
+              this.messages = this.messages.filter(m => m.text !== '...');
+
+              // Interpolar la respuesta del bot
+              this.typeText(response.data, (partialText) => {
+                const botMessage: Message = {
+                  text: partialText,
+                  sender: 'bot',
+                  timestamp: new Date()
+                };
+
+                // Reemplazar o agregar el mensaje del bot
+                const existingBotMessageIndex = this.messages.length - 1 - this.messages.slice().reverse().findIndex(m => m.sender === 'bot');
+                if (existingBotMessageIndex !== -1) {
+                  this.messages[existingBotMessageIndex] = botMessage;
+                } else {
+                  this.messages.push(botMessage);
+                }
+
+                this.scrollToBottom();
+              });
+            },
+            error: (error: any) => {
+              console.error('Error en la respuesta del chat:', error);
+              Swal.fire('Error', 'No se pudo obtener la respuesta del bot', 'error');
+            }
+          });
+      }
     } catch (error) {
       throw new Error(`Error trying to identify ${model} model response`)
     }

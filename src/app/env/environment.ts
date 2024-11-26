@@ -1,13 +1,12 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: "AIzaSyA6t1ojiCJNr8PTdFAnTzGGfPrYXikDA1Y",
-    authDomain: "sample-firebase-ai-app-2fb08.firebaseapp.com",
-    databaseURL: "https://sample-firebase-ai-app-2fb08-default-rtdb.firebaseio.com",
-    projectId: "sample-firebase-ai-app-2fb08",
-    storageBucket: "sample-firebase-ai-app-2fb08.firebasestorage.app",
-    messagingSenderId: "416436474056",
-    appId: "1:416436474056:web:af35aac593fd6d548255fd",
-    measurementId: "G-QK4CB3CV8T"
+    apiKey: "AIzaSyBJ7fdLHFHzoY_cQPCiZfzEflEkoSpAzws",
+    authDomain: "panther-core.firebaseapp.com",
+    projectId: "panther-core",
+    storageBucket: "panther-core.firebasestorage.app",
+    messagingSenderId: "277248590498",
+    appId: "1:277248590498:web:3a275edf2f8d4cbd068dfb",
+    measurementId: "G-3E4XG20Z2E"
   }
 };

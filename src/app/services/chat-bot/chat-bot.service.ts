@@ -72,7 +72,7 @@ export class ChatService {
       debugger;
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' })
       const modelParam = new HttpParams().set('model', model)
-      return this.http.post(`https://5000-idx-auth-servcie-ia-app-1731683870257.cluster-2xid2zxbenc4ixa74rpk7q7fyk.cloudworkstations.dev/chat`, data, { params: modelParam, headers: headers }).pipe(
+      return this.http.post(`http://192.168.1.36:5000/chat`, data, { params: modelParam, headers: headers }).pipe(
         map((message) => {
           debugger;
           return message

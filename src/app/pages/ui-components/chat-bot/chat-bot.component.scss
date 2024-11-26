@@ -129,3 +129,95 @@
 .action-icon:hover {
   color: #0066cc;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.message-content {
+  background-color: #f0f8ff;
+  padding: 10px;
+  border-radius: 10px;
+  word-wrap: break-word;
+
+  ::ng-deep {
+    // Estilos para elementos de Markdown
+    h1, h2, h3, h4, h5, h6 {
+      margin: 0.5em 0;
+      font-weight: bold;
+    }
+
+    h1 { font-size: 1.5em; }
+    h2 { font-size: 1.3em; }
+    h3 { font-size: 1.2em; }
+
+    p {
+      margin: 0.5em 0;
+    }
+
+    pre {
+      background-color: #1e1e1e;
+      padding: 1em;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 0.5em 0;
+
+      code {
+        color: #fff;
+        font-family: 'Consolas', 'Monaco', monospace;
+      }
+    }
+
+    code:not(pre code) {
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: 'Consolas', 'Monaco', monospace;
+    }
+
+    ul, ol {
+      margin: 0.5em 0;
+      padding-left: 2em;
+    }
+
+    blockquote {
+      border-left: 3px solid #ccc;
+      margin: 0.5em 0;
+      padding-left: 1em;
+      color: #666;
+    }
+  }
+}
+
+.user-message {
+  .message-content {
+    background-color: #0080ff;
+    color: #ffffff;
+
+    ::ng-deep {
+      code:not(pre code) {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      pre {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+
+      blockquote {
+        border-left-color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+}
+
+// Asegúrate de importar los estilos de highlight.js
+@import 'highlight.js/styles/vs2015.css';
+

@@ -18,9 +18,23 @@
   </div>
   <div class="chat-area">
     <div class="chat-messages">
-      @for (message of messages; track message) {
+      @for (message of messages; track trackByMessage(0, message)) {
       <div class="message" [class.user-message]="message.sender === 'user'">
-        <div class="message-content">{{ message.text }}</div>
+        <div class="message-content">
+          @if (message.sender === 'user') {
+            {{ message.text }}
+          } @else {
+            @if (message.typing) {
+              @if (message.text === '...') {
+                <span class="typing-indicator">...</span>
+              } @else {
+                <span [innerHTML]="message.renderedText"></span><span class="typing-cursor">|</span>
+              }
+            } @else {
+              <span [innerHTML]="message.renderedText"></span>
+            }
+          }
+        </div>
         <div class="message-timestamp">{{ message.timestamp | date:'short' }}</div>
       </div>
       }
@@ -31,3 +45,4 @@
     </div>
   </div>
 </div>
+

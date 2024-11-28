@@ -4,17 +4,17 @@ export const navItems: NavItem[] = [
   {
     navCap: 'Home',
   },
-  {
+/*   {
     displayName: 'Dashboard',
     iconName: 'layout-grid-add',
     route: '/dashboard',
-  },
+  }, */
   {
     displayName: 'Chat-bot',
     iconName: 'message-circle',
     route: '/dashboard/chat-bot',
   },
-  {
+  /* {
     displayName: 'Chat-bot-2',
     iconName: 'message-circle',
     route: '/dashboard/chat-bot-v2',
@@ -33,7 +33,7 @@ export const navItems: NavItem[] = [
     displayName: 'Payment Gateway',
     iconName: 'user-plus',
     route: '/ui-components/payment-gateway',
-  },
+  }, */
  /*  {
     navCap: 'Ui Components',
   },

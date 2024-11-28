@@ -9,11 +9,11 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/dashboard',
+        redirectTo: '/chat-bot',
         pathMatch: 'full',
       },
       {
-        path: 'dashboard',
+        path: 'chat-bot',
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },

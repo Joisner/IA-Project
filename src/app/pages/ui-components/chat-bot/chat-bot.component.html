@@ -1,48 +1,102 @@
-<div class="chat-container">
-  <div class="conversation-list">
-    <div class="header">
-      <h2>Conversations</h2>
-      <i class="material-icons add-icon" (click)="newChat()">add_box</i>
+<div class="chat-wrapper">
+  <div class="chat-container">
+    <div class="conversation-list">
+      <div class="header">
+        <h2>Conversations</h2>
+
+        <i class="material-icons add-icon" (click)="newChat()">add_box</i>
+      </div>
+
+      <ul>
+        @for (conv of conversations; track trackByConversationId(0, conv)) {
+        <li
+          (click)="selectConversation(conv)"
+          [class.active]="conv === selectedConversation"
+        >
+          <div class="conversation-content">
+            <strong>{{ conv.lastMessage }}</strong
+            ><br />
+
+            <small>{{ conv.timestamp | date : "short" }}</small>
+          </div>
+
+          <i
+            class="material-icons action-icon"
+            (click)="deleteConversation(conv); $event.stopPropagation()"
+            >delete</i
+          >
+        </li>
+
+        }
+      </ul>
     </div>
-    <ul>
-      @for (conv of conversations; track trackByConversationId(0, conv)) {
-      <li (click)="selectConversation(conv)" [class.active]="conv === selectedConversation">
-        <div class="conversation-content">
-          <strong>{{ conv.lastMessage }}</strong><br>
-          <small>{{ conv.timestamp | date:'short' }}</small>
-        </div>
-        <i class="material-icons action-icon" (click)="deleteConversation(conv); $event.stopPropagation()">delete</i>
-      </li>
-      }
-    </ul>
-  </div>
-  <div class="chat-area">
-    <div class="chat-messages">
-      @for (message of messages; track trackByMessage(0, message)) {
-      <div class="message" [class.user-message]="message.sender === 'user'">
-        <div class="message-content">
-          @if (message.sender === 'user') {
-            {{ message.text }}
-          } @else {
-            @if (message.typing) {
-              @if (message.text === '...') {
-                <span class="typing-indicator">...</span>
-              } @else {
-                <span [innerHTML]="message.renderedText"></span><span class="typing-cursor">|</span>
+
+    <div class="chat-area">
+      <div class="model-selector-container">
+        <div class="selector-group">
+          <mat-form-field appearance="outline" class="selector-field">
+            <mat-label>Choose Assistant</mat-label>
+
+            <mat-select
+              [(ngModel)]="selectedAssistant"
+              panelClass="custom-select-panel"
+            >
+              @for (assistant of assistants; track assistant) {
+
+              <mat-option [value]="assistant">{{ assistant }}</mat-option>
+
               }
-            } @else {
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="chat-content">
+        <div class="chat-messages">
+          @for (message of messages; track trackByMessage(0, message)) {
+          <div class="message" [class.user-message]="message.sender === 'user'">
+            <div class="message-content">
+              @if (message.sender === 'user') {
+              {{ message.text }}
+
+              } @else { @if (message.typing) { @if (message.text === '...') {
+             
+              <div class="typing-indicator">
+                <span></span>
+              </div>
+
+              } @else {
               <span [innerHTML]="message.renderedText"></span>
-            }
+
+              <span class="typing-cursor">|</span>
+
+              } } @else {
+              <span [innerHTML]="message.renderedText"></span>
+
+              } }
+            </div>
+
+            <div class="message-timestamp">
+              {{ message.timestamp | date : "short" }}
+            </div>
+          </div>
+
           }
         </div>
-        <div class="message-timestamp">{{ message.timestamp | date:'short' }}</div>
+
+        <div class="chat-input">
+          <input
+            type="text"
+            [(ngModel)]="newMessage"
+            (keyup.enter)="sendMessage()"
+            placeholder="Type your message..."
+          />
+
+          <button (click)="sendMessage()">
+            <i class="material-icons">send</i>
+          </button>
+        </div>
       </div>
-      }
-    </div>
-    <div class="chat-input">
-      <input type="text" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Type your message...">
-      <button (click)="sendMessage()"><i class="material-icons">send</i></button>
     </div>
   </div>
 </div>
-

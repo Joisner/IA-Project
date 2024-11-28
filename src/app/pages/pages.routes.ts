@@ -6,11 +6,11 @@ import { PaymentGatewayComponent } from './ui-components/payment-gateway/payment
 export const PagesRoutes: Routes = [
   {
     path: '',
-    component: StarterComponent,
+    component: ChatBotComponent,
     data: {
       title: 'Starter',
       urls: [
-        { title: 'Dashboard', url: '/dashboard' },
+        { title: 'Dashboard', url: '/chat-bot' },
         { title: 'Starter' },
       ],
     },

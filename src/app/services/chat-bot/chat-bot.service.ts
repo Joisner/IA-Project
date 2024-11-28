@@ -67,21 +67,26 @@ export class ChatService {
     }
   }
 
-  public sendPromptChat(model: string, data: object): Observable<any> {
+  public sendPromptChat(assistant: string, model: string, data: object): Observable<any> {
     try {
       debugger;
-      const headers = new HttpHeaders({ 'Content-Type': 'application/json' })
-      const modelParam = new HttpParams().set('model', model)
-      return this.http.post(`http://192.168.1.36:5000/chat`, data, { params: modelParam, headers: headers }).pipe(
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+      // Construir los parámetros de la URL
+      const params = new HttpParams()
+        .set('assistant', assistant)
+        .set('model', model);
+
+        const cloud = 'https://5000-idx-auth-servcie-ia-app-1731683870257.cluster-2xid2zxbenc4ixa74rpk7q7fyk.cloudworkstations.dev/chat?${params.toString()}'
+      return this.http.post(`http://192.168.1.36:5000/chat?${params.toString()}`, data, { headers: headers }).pipe(
         map((message) => {
           debugger;
-          return message
+          return message;
         })
       );
     }
     catch (error) {
-      throw new Error(`${error}`)
+      throw new Error(`${error}`);
     }
   }
-
 }
